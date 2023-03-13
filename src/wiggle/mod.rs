@@ -29,6 +29,6 @@ fn find_and_ease(row_width: f64, ease: &str) -> f64 {
         "exponential" => eases::exponential(row_width),
         "quart_in" => eases::quart_in(row_width),
         "quart_out" => eases::quart_out(row_width),
-        &_ => eases::quadratic(row_width)
+        &_ => eases::quadratic(row_width),
     }
 }
