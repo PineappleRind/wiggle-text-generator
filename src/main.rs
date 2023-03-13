@@ -3,7 +3,7 @@ use std::env;
 pub mod colors;
 pub mod wiggle;
 
-const USAGE: &'static str = "Usage: wiggle [width_int] [height_int] [text]";
+const USAGE: &'static str = "\n\nUsage: \x1b[36mwiggle \"text\" width height ease bezier_params\x1b[0m\n\x1b[2mSee docs for more information (\x1b[4mhttps://github.com/PineappleRind/wiggle-text-generator\x1b[0m\x1b[2m)\x1b[0m\n\n";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -27,6 +27,17 @@ fn main() {
         None => "quadratic",
     };
 
+    let bezier_params = match args.get(5) {
+        Some(v) => {
+            let split_vec = v.split(",").collect::<Vec<&str>>();
+            split_vec
+                .into_iter()
+                .map(|f| f.parse::<f64>().unwrap())
+                .collect()
+        }
+        None => vec![0.6, 0.0, 0.4, 1.0],
+    };
+
     println!(
         "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}\n",
         colors::ansi_color("Generating wiggle...", vec![35, 4]),
@@ -40,7 +51,7 @@ fn main() {
         ease
     );
 
-    let wiggle = wiggle::generate(&text, width, height, ease.to_string());
+    let wiggle = wiggle::generate(&text, width, height, ease.to_string(), bezier_params);
     println!(
         "{} {} \n{}",
         colors::ansi_color("Generated wiggle!", vec![32, 4]),
