@@ -4,9 +4,9 @@ pub fn generate(text: &str, width: i32, height: i32, ease: String) -> String {
     let mut spaces: Vec<String> = vec![];
     for i in 0..height {
         // width of each row,between 0 and 1
-        let row_width_normalized: f32 = ((i as f32) / (height as f32)).abs();
+        let row_width_normalized: f64 = ((i as f64) / (height as f64)).abs();
         let eased_row_width: i32 =
-            (find_and_ease(row_width_normalized as f64, &ease) * width as f64).floor() as i32;
+            (find_and_ease(row_width_normalized, &ease) * width as f64).floor() as i32;
         let spaces_row = " ".repeat(eased_row_width.try_into().unwrap());
         spaces.push(spaces_row);
     }
