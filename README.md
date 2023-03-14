@@ -16,6 +16,8 @@ Usage: `wiggle-text-generator text width height [ease] [bezier_params]`
 ### `bezier_params` 
 4 comma-separated values (no spaces). It only works if `ease` is `custom_bezier`.
 
+If you don't want to fiddle with numbers, [here's a good visual editor](https://cubic-bezier.com).
+
 ### `ease`
 One of `linear`, `sine`, `quadratic`, `cubic`, `exponential`, `quart_in`, `quart_out`, `custom_bezier`.
 
