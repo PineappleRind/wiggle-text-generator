@@ -19,7 +19,7 @@ Usage: `wiggle-text-generator text width height [ease] [bezier_params]`
 ### `ease`
 One of `linear`, `sine`, `quadratic`, `cubic`, `exponential`, `quart_in`, `quart_out`, `custom_bezier`.
 
-If using `custom_bezier`, (`bezier_params`)[#bezier-params] is required.
+If using `custom_bezier`, [`bezier_params`](#bezier_params) is required.
 
 ## What's a wiggle?
 This is a wiggle!
