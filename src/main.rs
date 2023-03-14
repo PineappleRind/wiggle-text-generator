@@ -1,61 +1,77 @@
-use std::env;
-
+pub mod cli;
 pub mod colors;
 pub mod wiggle;
 
-const USAGE: &'static str = "\n\nUsage: \x1b[36mwiggle \"text\" width height ease bezier_params\x1b[0m\n\x1b[2mSee docs for more information (\x1b[4mhttps://github.com/PineappleRind/wiggle-text-generator\x1b[0m\x1b[2m)\x1b[0m\n\n";
-
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let matches = cli::new().get_matches();
 
-    let text = args.get(1).expect(USAGE);
-    // do I really have to expect for both arguments and invalid integers?
-    let width = args
-        .get(2)
-        .expect(USAGE)
-        .parse()
-        .expect(&format!("Invalid integer! {}", USAGE));
+    let text = matches
+        .get_one::<String>("TEXT")
+        .expect("Text is required!");
 
-    let height = args
-        .get(3)
-        .expect(USAGE)
-        .parse()
-        .expect(&format!("Invalid integer! {}", USAGE));
-
-    let ease = match args.get(4) {
-        Some(v) => v,
-        None => "quadratic",
+    let width: u32 = *matches.get_one("width").expect("unreachable");
+    let height: u32 = *matches.get_one("height").expect("unreachable");
+    let ease: &str = match matches.get_one::<String>("ease") {
+        Some(v) => {
+            if wiggle::eases::ALL.contains(&v.as_str()) {
+                v
+            } else {
+                "quadratic"
+            }
+        }
+        None => "custom_bezier",
     };
 
-    let bezier_params = match args.get(5) {
+    let quiet_mode: bool = matches.get_flag("quiet");
+
+    let bezier_params = match matches.get_one::<String>("cubic_bezier") {
         Some(v) => {
-            let split_vec = v.split(",").collect::<Vec<&str>>();
+            let split_vec = v.split(',');
             split_vec
                 .into_iter()
                 .map(|f| f.parse::<f64>().unwrap())
-                .collect()
+                .collect::<Vec<f64>>()
         }
         None => vec![0.6, 0.0, 0.4, 1.0],
     };
 
-    println!(
-        "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}\n",
-        colors::ansi_color("Generating wiggle...", vec![35, 4]),
-        colors::ansi_color("Text:", vec![2]),
-        text,
-        colors::ansi_color("Width:", vec![2]),
-        width,
-        colors::ansi_color("Height:", vec![2]),
-        height,
-        colors::ansi_color("Ease:", vec![2]),
-        ease
+    print_info(
+        &format!(
+            "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}\n\n",
+            colors::ansi_color("Generating wiggle...", &[35, 4]),
+            colors::ansi_color("Text:", &[2]),
+            text,
+            colors::ansi_color("Width:", &[2]),
+            width,
+            colors::ansi_color("Height:", &[2]),
+            height,
+            colors::ansi_color("Ease:", &[2]),
+            ease
+        ),
+        quiet_mode,
+        None,
     );
 
-    let wiggle = wiggle::generate(&text, width, height, ease.to_string(), bezier_params);
-    println!(
-        "{} {} \n{}",
-        colors::ansi_color("Generated wiggle!", vec![32, 4]),
-        colors::ansi_color(&format!("({} characters)", wiggle.len()), vec![2]),
-        wiggle
+    let wiggle = wiggle::generate(text, width, height, ease, &bezier_params);
+
+    print_info(
+        &format!(
+            "{} {} \n",
+            colors::ansi_color("Generated wiggle!", &[32, 4]),
+            colors::ansi_color(&format!("({} characters)", wiggle.len()), &[2]),
+            //wiggle
+        ),
+        quiet_mode,
+        Some(wiggle),
     );
+}
+
+fn print_info(text: &str, quiet_mode: bool, alt_text: Option<String>) {
+    if !quiet_mode {
+        print!("{}", text);
+        return;
+    }
+    if let Some(a) = alt_text {
+        print!("{}", a);
+    }
 }

@@ -21,13 +21,13 @@ pub fn cubic(x: f64) -> f64 {
     }
 }
 pub fn exponential(x: f64) -> f64 {
-    if x == 0.0 || x == 1.0 {
+    if x == 0.0 || (x - 1.0).abs() < f64::EPSILON {
         return x;
     }
     if x < 0.5 {
-        return (2.0_f64).powf(20.0 * x - 10.0) / 2.0;
+        (2.0_f64).powf(20.0 * x - 10.0) / 2.0
     } else {
-        return (2.0 - ((2.0_f64).powf(-20.0 * x + 10.0))) / 2.0;
+        (2.0 - ((2.0_f64).powf(-20.0 * x + 10.0))) / 2.0
     }
 }
 pub fn quart_out(x: f64) -> f64 {
@@ -36,3 +36,13 @@ pub fn quart_out(x: f64) -> f64 {
 pub fn quart_in(x: f64) -> f64 {
     x * x * x * x
 }
+
+pub const ALL: [&str; 7] = [
+    "linear",
+    "sine",
+    "quadratic",
+    "cubic",
+    "exponential",
+    "quart_out",
+    "quart_in",
+];

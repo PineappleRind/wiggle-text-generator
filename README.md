@@ -1,7 +1,8 @@
 # wiggle-text-generator
 Generate wiggles ... in Rust!
 
-[Original implementation](https://github.com/PineappleRind/PineappleRind.github.io/blob/master/wiggle/worker.js) (old JavaScript code, needs optimization...)
+- [Original website](https://pineapplerind.xyz/wiggle)
+- [Website's implementation](https://github.com/PineappleRind/PineappleRind.github.io/blob/master/wiggle/worker.js) (old JavaScript code)
 
 ## Build
 1. [Have Rust installed](https://www.rust-lang.org/tools/install).
@@ -23,6 +24,10 @@ One of `linear`, `sine`, `quadratic`, `cubic`, `exponential`, `quart_in`, `quart
 
 If using `custom_bezier`, [`bezier_params`](#bezier_params) is required.
 
+## Speed
+It can generate a wiggle 100,000 rows tall and 100,000 columns wide in around 20 seconds. With some performance optimization that number could get even lower 👀
+
+(Not that you'd ever need generate a wiggle that big, it's just cool...)
 ## What's a wiggle?
 This is a wiggle!
 ```
