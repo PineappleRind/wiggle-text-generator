@@ -9,9 +9,17 @@ Generate wiggles ... in Rust!
 3. Executable will be at `target/release/wiggle-text-generator`.
 
 ## Usage
-Usage: `wiggle-text-generator text width height [ease]`
+Usage: `wiggle-text-generator text width height [ease] [bezier_params]`
 
-(`text`, `width`, and `height` are required, while `ease` is optional)
+`text`, `width`, and `height` are required, while `ease` and `bezier_params` are optional.
+
+### `bezier_params` 
+4 comma-separated values (no spaces). It only works if `ease` is `custom_bezier`.
+
+### `ease`
+One of `linear`, `sine`, `quadratic`, `cubic`, `exponential`, `quart_in`, `quart_out`, `custom_bezier`.
+
+If using `custom_bezier`, (`bezier_params`)[#bezier-params] is required.
 
 ## What's a wiggle?
 This is a wiggle!
