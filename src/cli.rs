@@ -1,4 +1,4 @@
-use clap::{arg, value_parser, ArgGroup, Command};
+use clap::{arg, value_parser, Command};
 
 use crate::wiggle;
 
@@ -17,9 +17,8 @@ pub fn new() -> Command {
                 .value_parser(value_parser!(u32))
                 .default_value("14"),
         )
-        .arg(arg!(-e --ease <EASE> "The name of an easing function. Cannot be used in combination with cubic_bezier").value_parser(wiggle::eases::ALL))
-        .arg(arg!(-b --cubic_bezier <BEZIER_PARAMS> "4 comma-separated values. Cannot be used in combination with ease").allow_hyphen_values(true))
-        .group(ArgGroup::new("ease_or_bezier").args(["ease", "cubic_bezier"]))
+        .arg(arg!(-e --ease <EASE> "The name of an easing function. Cannot be used in combination with cubic_bezier").value_parser(wiggle::eases::ALL).conflicts_with("cubic_bezier"))
+        .arg(arg!(-b --cubic_bezier <BEZIER_PARAMS> "4 comma-separated values. Cannot be used in combination with ease").allow_hyphen_values(true).conflicts_with("ease"))
         .arg(arg!(-q --quiet "Quiet mode. Only outputs the wiggle and nothing else"))
         // .arg(arg!(-o --output "Write to a file"))
         .arg(arg!(<TEXT> "Wiggle text"))
