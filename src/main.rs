@@ -1,4 +1,4 @@
-use std::thread;
+use std::{thread, process::exit};
 
 pub mod cli;
 pub mod colors;
@@ -14,7 +14,7 @@ fn main() {
 
     let width: u32 = *matches.get_one("width").expect("unreachable");
     let height: u32 = *matches.get_one("height").expect("unreachable");
-  
+
     let bezier_params = match matches.get_one::<String>("cubic_bezier") {
         Some(v) => {
             let split_vec = v.split(',');
@@ -35,13 +35,14 @@ fn main() {
             }
         }
         None => {
-            if bezier_params.len() != 0 {
-                "custom_bezier"
-            } else {
+            if bezier_params.is_empty() {
                 "quadratic"
+            } else {
+                "custom_bezier"
             }
         }
-    }.to_owned();
+    }
+    .to_owned();
 
     let quiet_mode: bool = matches.get_flag("quiet");
 
@@ -62,11 +63,16 @@ fn main() {
         None,
     );
 
-    let wiggle_thread = thread::spawn(move || {
-        wiggle::generate(&text, width, height, &ease, &bezier_params)
-    });
+    let wiggle_thread =
+        thread::spawn(move || wiggle::generate(&text, width, height, &ease, &bezier_params));
 
-    let wiggle = wiggle_thread.join().unwrap();
+    let wiggle = match wiggle_thread.join() {
+        Ok(wiggle) => wiggle,
+        Err(error) => {
+            println!("{:?}", error);
+            exit(1);
+        },
+    };
 
     print_info(
         &format!(
