@@ -5,14 +5,14 @@
  * by Gaëtan Renaudeau 2014 - 2015 – MIT License
  */
 
-const KSPLINE_TABLE_SIZE: usize = 222;
+const KSPLINE_TABLE_SIZE: usize = 256;
 const KSAMPLE_STEP_SIZE: f64 = 1.0 / (KSPLINE_TABLE_SIZE as f64 - 1.0);
 
-const NEWTON_ITERATIONS: usize = 126;
+const NEWTON_ITERATIONS: usize = 16;
 const NEWTON_MIN_SLOPE: f64 = 0.00001;
 
-const SUBDIVISION_PRECISION: f64 = 0.000_000_001;
-const SUBDIVISION_MAX_ITERATIONS: usize = 122;
+const SUBDIVISION_PRECISION: f64 = 0.000_001;
+const SUBDIVISION_MAX_ITERATIONS: usize = 64;
 
 pub fn calculate(x: f64, t: &[f64]) -> f64 {
     // before doing anything,
