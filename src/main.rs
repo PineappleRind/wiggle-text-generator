@@ -1,4 +1,4 @@
-use std::{thread, process::exit};
+use std::{process::exit, thread};
 
 pub mod cli;
 pub mod colors;
@@ -12,8 +12,7 @@ fn main() {
         .expect("Text is required!")
         .clone();
 
-    let width: u32 = *matches.get_one("width").expect("unreachable");
-    let height: u32 = *matches.get_one("height").expect("unreachable");
+    let dimensions: (u32, u32) = *matches.get_one("dimensions").expect("No dimensions");
 
     let bezier_params = match matches.get_one::<String>("cubic_bezier") {
         Some(v) => {
@@ -53,9 +52,9 @@ fn main() {
             colors::ansi_color("Text:", &[2]),
             text,
             colors::ansi_color("Width:", &[2]),
-            width,
+            dimensions.0,
             colors::ansi_color("Height:", &[2]),
-            height,
+            dimensions.1,
             colors::ansi_color("Ease:", &[2]),
             ease
         ),
@@ -64,14 +63,14 @@ fn main() {
     );
 
     let wiggle_thread =
-        thread::spawn(move || wiggle::generate(&text, width, height, &ease, &bezier_params));
+        thread::spawn(move || wiggle::generate(&text, dimensions, &ease, &bezier_params));
 
     let wiggle = match wiggle_thread.join() {
         Ok(wiggle) => wiggle,
         Err(error) => {
             println!("{:?}", error);
             exit(1);
-        },
+        }
     };
 
     print_info(

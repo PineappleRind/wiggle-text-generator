@@ -3,9 +3,15 @@ use std::process::exit;
 pub mod bezier;
 pub mod eases;
 
-pub fn generate(text: &str, width: u32, height: u32, ease: &str, bezier_params: &[f64]) -> String {
+pub fn generate(text: &str, dimensions: (u32, u32), ease: &str, bezier_params: &[f64]) -> String {
     let mut spaces: Vec<String> = vec![];
     let mut offset: usize = 0;
+    let (width, height) = dimensions;
+
+    // Make height half of what the user specified, as we'll be appending the wiggle's reverse later.
+    // Note that this loses precision, so a height of 7 and a height of 8 will both end up being 8.
+    let height = (height as f64 / 2.0).round() as u32;
+
     for i in 0..height {
         // width of each row, between 0 and 1; goes up linearly with i
         let row_width_normalized: f64 = (f64::from(i) / f64::from(height)).abs();
