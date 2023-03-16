@@ -26,13 +26,7 @@ fn main() {
     };
 
     let ease: String = match matches.get_one::<String>("ease") {
-        Some(v) => {
-            if wiggle::eases::ALL.contains(&v.as_str()) {
-                v
-            } else {
-                "quadratic"
-            }
-        }
+        Some(v) => v,
         None => {
             if bezier_params.is_empty() {
                 "quadratic"
