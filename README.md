@@ -7,7 +7,7 @@ Generate wiggles ... in Rust!
 ## Build
 1. [Have Rust installed](https://www.rust-lang.org/tools/install).
 2. Build with `cargo build --release`.
-3. Executable will be at `target/release/wiggle-text-generator`.
+3. (v0.1) Executable will be at `target/release/wiggle-text-generator`.
 
 ## Usage (v0.1)
 Usage: `wiggle-text-generator text width height [ease] [bezier_params]`
@@ -24,12 +24,16 @@ One of `linear`, `sine`, `quadratic`, `cubic`, `exponential`, `quart_in`, `quart
 
 If using `custom_bezier`, [`bezier_params`](#bezier_params) is required.
 
-## Speed (v0.1)
-It can generate a wiggle 100,000 rows tall and 100,000 columns wide in around 20 seconds. With some performance optimization that number could get even lower 👀
+## Speed
+v0.1 can generate a wiggle 100,000 rows tall and 100,000 columns wide in around 20 seconds. With some performance optimization that number could get even lower 👀
+
+When the string is giant, its biggest bottlenecks are:
+- Appending the reversed wiggle to the half-wiggle
+- Joining the Vec<String> into a String
 
 (Not that you'd ever need generate a wiggle that big, it's just cool...)
 ## What's a wiggle?
-This is a wiggle!
+This is a wiggle :D
 ```
 text
 text
