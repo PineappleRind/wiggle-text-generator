@@ -14,16 +14,11 @@ fn main() {
 
     let dimensions: (u32, u32) = *matches.get_one("dimensions").expect("No dimensions");
 
-    let bezier_params = match matches.get_one::<String>("cubic_bezier") {
-        Some(v) => {
-            let split_vec = v.split(',');
-            split_vec
-                .into_iter()
-                .map(|f| f.parse::<f64>().unwrap())
-                .collect::<Vec<f64>>()
-        }
-        None => vec![],
-    };
+    let bezier_params: Vec<f64> = (*matches
+        .get_one::<Vec<f64>>("cubic_bezier")
+        .or(Some(&vec![]))
+        .expect("Unreachable"))
+    .clone();
 
     let ease: String = match matches.get_one::<String>("ease") {
         Some(v) => v,
