@@ -1,4 +1,5 @@
-use std::{process::exit, thread};
+//use kdam::{tqdm, BarExt};
+use std::{process::exit, /*sync::mpsc,*/ thread};
 
 pub mod cli;
 pub mod colors;
@@ -15,7 +16,7 @@ fn main() {
     let dimensions: (u32, u32) = *matches.get_one("dimensions").expect("No dimensions");
 
     let bezier_params: Vec<f64> = (*matches
-        .get_one::<Vec<f64>>("cubic_bezier")
+        .get_one::<Vec<f64>>("bezier")
         .or(Some(&vec![]))
         .expect("Unreachable"))
     .clone();
@@ -32,11 +33,12 @@ fn main() {
     }
     .to_owned();
 
+    let raw_mode: bool = matches.get_flag("raw");
     let quiet_mode: bool = matches.get_flag("quiet");
 
-    print_info(
-        &format!(
-            "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}\n\n",
+    if !raw_mode {
+        println!(
+            "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}\n",
             colors::ansi_color("Generating wiggle...", &[35, 4]),
             colors::ansi_color("Text:", &[2]),
             text,
@@ -46,13 +48,22 @@ fn main() {
             dimensions.1,
             colors::ansi_color("Ease:", &[2]),
             ease
-        ),
-        quiet_mode,
-        None,
-    );
+        )
+    }
+
+    // let (tx, rx) = mpsc::channel::<u32>();
+    // let mut progress_bar = tqdm!(total = 100);
+    // let mut last_update: u32 = 0;
 
     let wiggle_thread =
-        thread::spawn(move || wiggle::generate(&text, dimensions, &ease, &bezier_params));
+        thread::spawn(move || wiggle::generate(&text, dimensions, &ease, &bezier_params/* ,tx*/));
+
+    // for received in rx {
+    //     if last_update != received {
+    //         progress_bar.update_to(received.try_into().unwrap());
+    //     }
+    //     last_update = received;
+    // }
 
     let wiggle = match wiggle_thread.join() {
         Ok(wiggle) => wiggle,
@@ -62,24 +73,15 @@ fn main() {
         }
     };
 
-    print_info(
-        &format!(
-            "{} {} \n{}\n",
+    if !raw_mode {
+        println!(
+            "{} {} \n",
             colors::ansi_color("Generated wiggle!", &[32, 4]),
-            colors::ansi_color(&format!("({} characters)", wiggle.len()), &[2]),
-            wiggle
-        ),
-        quiet_mode,
-        Some(wiggle),
-    );
-}
-
-fn print_info(text: &str, quiet_mode: bool, alt_text: Option<String>) {
-    if !quiet_mode {
-        print!("{}", text);
-        return;
+            colors::ansi_color(&format!("({} characters)", wiggle.len()), &[2])
+        )
     }
-    if let Some(a) = alt_text {
-        print!("{}", a);
+
+    if !quiet_mode {
+        println!("{}", &wiggle);
     }
 }

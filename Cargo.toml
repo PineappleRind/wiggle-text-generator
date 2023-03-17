@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 clap = "4.1.8"
+# kdam = "0.3.0"
 
 [profile.release]
 opt-level = 'z'     # Optimize for size

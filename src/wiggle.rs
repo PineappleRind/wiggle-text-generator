@@ -1,9 +1,15 @@
-use std::process::exit;
+use std::{process::exit/*, sync::mpsc::Sender*/};
 
 pub mod bezier;
 pub mod eases;
 
-pub fn generate(text: &str, dimensions: (u32, u32), ease: &str, bezier_params: &[f64]) -> String {
+pub fn generate(
+    text: &str,
+    dimensions: (u32, u32),
+    ease: &str,
+    bezier_params: &[f64],
+//    tx: Sender<u32>,
+) -> String {
     let mut spaces: Vec<String> = vec![];
     let mut offset: usize = 0;
     let (width, height) = dimensions;
@@ -15,6 +21,7 @@ pub fn generate(text: &str, dimensions: (u32, u32), ease: &str, bezier_params: &
     for i in 0..height {
         // width of each row, between 0 and 1; goes up linearly with i
         let row_width_normalized: f64 = (f64::from(i) / f64::from(height)).abs();
+
         // between 0 and 1; goes up with i, but eased with the user's specified ease function
         let mut eased_normalized: f64 = find_and_ease(row_width_normalized, ease, bezier_params);
         // Move entire wiggle right by eased_normalized if eased_normalized is negative
@@ -36,14 +43,18 @@ pub fn generate(text: &str, dimensions: (u32, u32), ease: &str, bezier_params: &
 
         let spaces_row = format!("{}{}", " ".repeat(eased_row_width), text);
         spaces.push(spaces_row);
+
+        // tx.send((row_width_normalized * 100.0).round() as u32)
+        //     .unwrap();
     }
+    // println!("Finished adding spaces");
     // append spaces' mirror
-    let mut mirror: Vec<String> = spaces.clone();
-    mirror.reverse();
+    spaces.extend(spaces.clone().into_iter().rev().collect::<Vec<String>>());
+    // println!("Appended mirror");
 
-    spaces = spaces.into_iter().chain(mirror).collect();
-
-    spaces.join("\n")
+    let joined = spaces.join("\n");
+    // println!("Finished joining");
+    joined
 }
 
 fn find_and_ease(row_width: f64, ease: &str, bezier_params: &[f64]) -> f64 {
