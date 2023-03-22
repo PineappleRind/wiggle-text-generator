@@ -37,22 +37,25 @@ pub fn new() -> Command {
     Command::new("wiggle")
         .version("0.2.0")
         .author("PineappleRind (https://github.com/PineappleRind)")
-        .about("\x1b[36mGenerate text wiggles (for no reason)!\x1b[0m")
+        .about("\x1b[36mGenerate text wiggles (for no good reason)!\x1b[0m")
         .color(clap::ColorChoice::Always)
+        .arg(
+            arg!(-b --bezier <CUBIC_BEZIER_PARAMS> "4 comma-separated values. Cannot be used in combination with --ease.")
+            .allow_hyphen_values(true)
+            .value_parser(clap::builder::ValueParser::new(parse_bezier_params))
+            .conflicts_with("ease")
+        )
         .arg(
             arg!(-d --dimensions <WIDTHxHEIGHT>)
                 .default_value("14x7")
                 .value_parser(clap::builder::ValueParser::new(parse_dimensions)),
         )
-        .arg(arg!(-e --ease <EASE> "The name of an easing function. Cannot be used in combination with cubic_bezier").value_parser(wiggle::eases::ALL).conflicts_with("bezier"))
-        .arg(
-            arg!(-b --bezier <CUBIC_BEZIER_PARAMS> "4 comma-separated values. Cannot be used in combination with ease")
-                .allow_hyphen_values(true)
-                .value_parser(clap::builder::ValueParser::new(parse_bezier_params))
-                .conflicts_with("ease")
-        )
-        .arg(arg!(-r --raw "Raw mode. Only outputs the wiggle, and nothing else"))
+        .arg(arg!(-e --ease <EASE> "The name of an easing function. Cannot be used in combination with --bezier.").value_parser(wiggle::eases::ALL).conflicts_with("bezier"))
+        .arg(arg!(-p --progress "Show progress. You should use this if you're generating a really big wiggle for some reason."))
         .arg(arg!(-q --quiet "Quiet mode. Doesn't output anything. Currently, for measuring performance"))
+        .arg(arg!(-r --raw "Raw mode. Only outputs the wiggle, and nothing else. Overrides --progress."))
         .arg(arg!(<TEXT> "Wiggle text"))
         .arg_required_else_help(true)
 }
+
+pub const LOADER: &[&str] = &["◜", "◝", "◞", "◟", "\x1b[32m✓\x1b[0m"];

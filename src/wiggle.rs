@@ -1,4 +1,4 @@
-use std::{process::exit/*, sync::mpsc::Sender*/};
+use std::{process::exit, sync::mpsc::Sender};
 
 pub mod bezier;
 pub mod eases;
@@ -8,7 +8,7 @@ pub fn generate(
     dimensions: (u32, u32),
     ease: &str,
     bezier_params: &[f64],
-//    tx: Sender<u32>,
+    tx: &Sender<String>,
 ) -> String {
     let mut spaces: Vec<String> = vec![];
     let mut offset: usize = 0;
@@ -18,6 +18,8 @@ pub fn generate(
     // Note that this loses precision, so a height of 7 and a height of 8 will both end up being 8.
     let height = (height as f64 / 2.0).round() as u32;
 
+    tx.send("Generating first half...".to_string())
+        .unwrap_or(());
     for i in 0..height {
         // width of each row, between 0 and 1; goes up linearly with i
         let row_width_normalized: f64 = (f64::from(i) / f64::from(height)).abs();
@@ -43,17 +45,18 @@ pub fn generate(
 
         let spaces_row = format!("{}{}", " ".repeat(eased_row_width), text);
         spaces.push(spaces_row);
-
-        // tx.send((row_width_normalized * 100.0).round() as u32)
-        //     .unwrap();
     }
-    // println!("Finished adding spaces");
-    // append spaces' mirror
+    tx.send("Appending last half...".to_string()).unwrap_or(());
+    //append spaces' mirror
     spaces.extend(spaces.clone().into_iter().rev().collect::<Vec<String>>());
-    // println!("Appended mirror");
+
+    tx.send("Joining rows into wiggle...\n".to_string())
+        .unwrap_or(());
 
     let joined = spaces.join("\n");
-    // println!("Finished joining");
+    
+    tx.send("finished\n".to_string()).unwrap_or(());
+    
     joined
 }
 

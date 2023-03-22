@@ -1,5 +1,5 @@
-//use kdam::{tqdm, BarExt};
-use std::{process::exit, /*sync::mpsc,*/ thread};
+use indicatif::{ProgressBar, ProgressStyle};
+use std::{process::exit, sync::mpsc, thread, time::Duration};
 
 pub mod cli;
 pub mod colors;
@@ -35,10 +35,11 @@ fn main() {
 
     let raw_mode: bool = matches.get_flag("raw");
     let quiet_mode: bool = matches.get_flag("quiet");
+    let show_progress: bool = matches.get_flag("progress");
 
     if !raw_mode {
         println!(
-            "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}\n",
+            "{}\n{} \"{}\"\n{} {}\n{} {}\n{} {}",
             colors::ansi_color("Generating wiggle...", &[35, 4]),
             colors::ansi_color("Text:", &[2]),
             text,
@@ -48,22 +49,30 @@ fn main() {
             dimensions.1,
             colors::ansi_color("Ease:", &[2]),
             ease
-        )
+        );
     }
 
-    // let (tx, rx) = mpsc::channel::<u32>();
-    // let mut progress_bar = tqdm!(total = 100);
-    // let mut last_update: u32 = 0;
+    let (tx, rx) = mpsc::channel::<String>();
 
     let wiggle_thread =
-        thread::spawn(move || wiggle::generate(&text, dimensions, &ease, &bezier_params/* ,tx*/));
+        thread::spawn(move || wiggle::generate(&text, dimensions, &ease, &bezier_params, &tx));
 
-    // for received in rx {
-    //     if last_update != received {
-    //         progress_bar.update_to(received.try_into().unwrap());
-    //     }
-    //     last_update = received;
-    // }
+    if show_progress && !raw_mode {
+        let mut progress_bar = ProgressBar::new_spinner();
+        for received in rx {
+            progress_bar.finish();
+            if received.to_lowercase().contains("finished") {
+                break;
+            }
+            progress_bar = ProgressBar::new_spinner().with_message(received);
+            progress_bar.enable_steady_tick(Duration::from_millis(120));
+            progress_bar.set_style(
+                ProgressStyle::with_template("{spinner:.magenta} {msg}")
+                    .unwrap()
+                    .tick_strings(cli::LOADER),
+            );
+        }
+    }
 
     let wiggle = match wiggle_thread.join() {
         Ok(wiggle) => wiggle,
@@ -78,7 +87,7 @@ fn main() {
             "{} {} \n",
             colors::ansi_color("Generated wiggle!", &[32, 4]),
             colors::ansi_color(&format!("({} characters)", wiggle.len()), &[2])
-        )
+        );
     }
 
     if !quiet_mode {

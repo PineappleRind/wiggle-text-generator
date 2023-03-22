@@ -4,94 +4,577 @@ Generate wiggles ... in Rust!
 - [Original website](https://pineapplerind.xyz/wiggle)
 - [Website's implementation](https://github.com/PineappleRind/PineappleRind.github.io/blob/master/wiggle/worker.js) (old JavaScript code)
 
+> For v0.1's README, visit [here](https://github.com/PineappleRind/wiggle-text-generator/tree/7c63a1df7ea780700d4514327320497b6fcce2e0).
+
 ## Build
 1. [Have Rust installed](https://www.rust-lang.org/tools/install).
-2. Build with `cargo build --release`.
-3. (v0.1) Executable will be at `target/release/wiggle-text-generator`.
+2. Clone the repository. `git clone "https://github.com/PineappleRind/wiggle-text-generator"`
+3. `cd wiggle-text-generator`
+4. Build with `cargo build --release`.
+5. The executable will be at `target/release/wiggle`.
+6. To run it, `cd target/release` then `./wiggle [OPTIONS] <TEXT>`. 
+7. If you'd like to have `wiggle` available globally, move ./wiggle to one of the directories in your $PATH.
+  - like `sudo mv ./wiggle /usr/local/bin` (usually `/usr/local/bin` is in your $PATH)
 
-## Usage (v0.1)
-Usage: `wiggle-text-generator text width height [ease] [bezier_params]`
+## Usage
+`wiggle [OPTIONS] <TEXT>`
 
-`text`, `width`, and `height` are required, while `ease` and `bezier_params` are optional.
+For detailed usage, run `wiggle --help`.
 
-### `bezier_params` 
-4 comma-separated values (no spaces). It only works if `ease` is `custom_bezier`.
-
-If you don't want to fiddle with numbers, [here's a good visual editor](https://cubic-bezier.com).
-
-### `ease`
-One of `linear`, `sine`, `quadratic`, `cubic`, `exponential`, `quart_in`, `quart_out`, `custom_bezier`.
-
-If using `custom_bezier`, [`bezier_params`](#bezier_params) is required.
+If you'd like to output to a file, use raw mode (`-r, --raw`) and text redirection:
+- `wiggle -r wahoo > output.txt`
 
 ## Speed
-v0.1 can generate a wiggle 100,000 rows tall and 100,000 columns wide in around 20 seconds. With some performance optimization that number could get even lower 👀
+Not that you'd ever need generate a wiggle this big, it's just cool...
 
-When the string is giant, its biggest bottlenecks are:
-- Appending the reversed wiggle to the half-wiggle
-- Joining the Vec<String> into a String
+- v0.1 can generate a wiggle 200000x200000 in 20 seconds!
+- v0.2 can do the same in 45 seconds (and I'm not going to be investigating why it's slower).
 
-(Not that you'd ever need generate a wiggle that big, it's just cool...)
 ## What's a wiggle?
 This is a wiggle :D
 ```
-text
-text
-text
-text
-text
- text
- text
-  text
-  text
-   text
-    text
-     text
-      text
-       text
-        text
-          text
-           text
-            text
-             text
-              text
-               text
-                text
-                 text
-                 text
-                  text
-                  text
-                   text
-                   text
-                   text
-                   text
-                   text
-                   text
-                   text
-                   text
-                  text
-                  text
-                 text
-                 text
-                text
-               text
-              text
-             text
-            text
-           text
-          text
-        text
-       text
-      text
-     text
-    text
-   text
-  text
-  text
- text
- text
-text
-text
-text
-text
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+  wahoo
+  wahoo
+  wahoo
+   wahoo
+   wahoo
+   wahoo
+    wahoo
+    wahoo
+    wahoo
+     wahoo
+     wahoo
+      wahoo
+      wahoo
+       wahoo
+       wahoo
+        wahoo
+        wahoo
+         wahoo
+         wahoo
+          wahoo
+           wahoo
+           wahoo
+            wahoo
+             wahoo
+              wahoo
+              wahoo
+               wahoo
+                wahoo
+                 wahoo
+                 wahoo
+                  wahoo
+                   wahoo
+                    wahoo
+                     wahoo
+                      wahoo
+                       wahoo
+                       wahoo
+                        wahoo
+                         wahoo
+                          wahoo
+                          wahoo
+                           wahoo
+                            wahoo
+                             wahoo
+                             wahoo
+                              wahoo
+                               wahoo
+                               wahoo
+                                wahoo
+                                wahoo
+                                 wahoo
+                                 wahoo
+                                  wahoo
+                                  wahoo
+                                   wahoo
+                                   wahoo
+                                    wahoo
+                                    wahoo
+                                    wahoo
+                                     wahoo
+                                     wahoo
+                                     wahoo
+                                      wahoo
+                                      wahoo
+                                      wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                      wahoo
+                                      wahoo
+                                      wahoo
+                                     wahoo
+                                     wahoo
+                                     wahoo
+                                    wahoo
+                                    wahoo
+                                    wahoo
+                                   wahoo
+                                   wahoo
+                                  wahoo
+                                  wahoo
+                                 wahoo
+                                 wahoo
+                                wahoo
+                                wahoo
+                               wahoo
+                               wahoo
+                              wahoo
+                             wahoo
+                             wahoo
+                            wahoo
+                           wahoo
+                          wahoo
+                          wahoo
+                         wahoo
+                        wahoo
+                       wahoo
+                       wahoo
+                      wahoo
+                     wahoo
+                    wahoo
+                   wahoo
+                  wahoo
+                 wahoo
+                 wahoo
+                wahoo
+               wahoo
+              wahoo
+              wahoo
+             wahoo
+            wahoo
+           wahoo
+           wahoo
+          wahoo
+         wahoo
+         wahoo
+        wahoo
+        wahoo
+       wahoo
+       wahoo
+      wahoo
+      wahoo
+     wahoo
+     wahoo
+    wahoo
+    wahoo
+    wahoo
+   wahoo
+   wahoo
+   wahoo
+  wahoo
+  wahoo
+  wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+  wahoo
+  wahoo
+  wahoo
+   wahoo
+   wahoo
+   wahoo
+    wahoo
+    wahoo
+    wahoo
+     wahoo
+     wahoo
+      wahoo
+      wahoo
+       wahoo
+       wahoo
+        wahoo
+        wahoo
+         wahoo
+         wahoo
+          wahoo
+           wahoo
+           wahoo
+            wahoo
+             wahoo
+              wahoo
+              wahoo
+               wahoo
+                wahoo
+                 wahoo
+                 wahoo
+                  wahoo
+                   wahoo
+                    wahoo
+                     wahoo
+                      wahoo
+                       wahoo
+                       wahoo
+                        wahoo
+                         wahoo
+                          wahoo
+                          wahoo
+                           wahoo
+                            wahoo
+                             wahoo
+                             wahoo
+                              wahoo
+                               wahoo
+                               wahoo
+                                wahoo
+                                wahoo
+                                 wahoo
+                                 wahoo
+                                  wahoo
+                                  wahoo
+                                   wahoo
+                                   wahoo
+                                    wahoo
+                                    wahoo
+                                    wahoo
+                                     wahoo
+                                     wahoo
+                                     wahoo
+                                      wahoo
+                                      wahoo
+                                      wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                      wahoo
+                                      wahoo
+                                      wahoo
+                                     wahoo
+                                     wahoo
+                                     wahoo
+                                    wahoo
+                                    wahoo
+                                    wahoo
+                                   wahoo
+                                   wahoo
+                                  wahoo
+                                  wahoo
+                                 wahoo
+                                 wahoo
+                                wahoo
+                                wahoo
+                               wahoo
+                               wahoo
+                              wahoo
+                             wahoo
+                             wahoo
+                            wahoo
+                           wahoo
+                          wahoo
+                          wahoo
+                         wahoo
+                        wahoo
+                       wahoo
+                       wahoo
+                      wahoo
+                     wahoo
+                    wahoo
+                   wahoo
+                  wahoo
+                 wahoo
+                 wahoo
+                wahoo
+               wahoo
+              wahoo
+              wahoo
+             wahoo
+            wahoo
+           wahoo
+           wahoo
+          wahoo
+         wahoo
+         wahoo
+        wahoo
+        wahoo
+       wahoo
+       wahoo
+      wahoo
+      wahoo
+     wahoo
+     wahoo
+    wahoo
+    wahoo
+    wahoo
+   wahoo
+   wahoo
+   wahoo
+  wahoo
+  wahoo
+  wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+  wahoo
+  wahoo
+  wahoo
+   wahoo
+   wahoo
+   wahoo
+    wahoo
+    wahoo
+    wahoo
+     wahoo
+     wahoo
+      wahoo
+      wahoo
+       wahoo
+       wahoo
+        wahoo
+        wahoo
+         wahoo
+         wahoo
+          wahoo
+           wahoo
+           wahoo
+            wahoo
+             wahoo
+              wahoo
+              wahoo
+               wahoo
+                wahoo
+                 wahoo
+                 wahoo
+                  wahoo
+                   wahoo
+                    wahoo
+                     wahoo
+                      wahoo
+                       wahoo
+                       wahoo
+                        wahoo
+                         wahoo
+                          wahoo
+                          wahoo
+                           wahoo
+                            wahoo
+                             wahoo
+                             wahoo
+                              wahoo
+                               wahoo
+                               wahoo
+                                wahoo
+                                wahoo
+                                 wahoo
+                                 wahoo
+                                  wahoo
+                                  wahoo
+                                   wahoo
+                                   wahoo
+                                    wahoo
+                                    wahoo
+                                    wahoo
+                                     wahoo
+                                     wahoo
+                                     wahoo
+                                      wahoo
+                                      wahoo
+                                      wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                        wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                       wahoo
+                                      wahoo
+                                      wahoo
+                                      wahoo
+                                     wahoo
+                                     wahoo
+                                     wahoo
+                                    wahoo
+                                    wahoo
+                                    wahoo
+                                   wahoo
+                                   wahoo
+                                  wahoo
+                                  wahoo
+                                 wahoo
+                                 wahoo
+                                wahoo
+                                wahoo
+                               wahoo
+                               wahoo
+                              wahoo
+                             wahoo
+                             wahoo
+                            wahoo
+                           wahoo
+                          wahoo
+                          wahoo
+                         wahoo
+                        wahoo
+                       wahoo
+                       wahoo
+                      wahoo
+                     wahoo
+                    wahoo
+                   wahoo
+                  wahoo
+                 wahoo
+                 wahoo
+                wahoo
+               wahoo
+              wahoo
+              wahoo
+             wahoo
+            wahoo
+           wahoo
+           wahoo
+          wahoo
+         wahoo
+         wahoo
+        wahoo
+        wahoo
+       wahoo
+       wahoo
+      wahoo
+      wahoo
+     wahoo
+     wahoo
+    wahoo
+    wahoo
+    wahoo
+   wahoo
+   wahoo
+   wahoo
+  wahoo
+  wahoo
+  wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+ wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
+wahoo
 ```
+
+They are fun to scroll through! 
+
+<i align="right"><small>I'm assuming you agree, since you reached the bottom 🙂</small></i>
